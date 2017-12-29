@@ -1,9 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
-  CloudFormationLambdaArn:
-    Type: String
-    Description: Lambda that handle's Custom CloudFormation Resources
-
   VPCStack:
     Type: String
     Description: VPC Stack Name
@@ -31,10 +27,17 @@ Parameters:
     Default: '/service'
     Description: Service path
 
+  BuildVersion:
+    Type: String
+    Description: Latest build version
+
   Version:
     Type: String
     Default: 'latest'
     Description: Service version
+
+Conditions:
+  UseBuildVersion: !Equals [!Ref Environment, 'sandbox']
 
 Resources:
 
@@ -178,7 +181,7 @@ Resources:
             - "${URL}:${Version}"
             - {
                 URL: { "Fn::ImportValue" : {"Fn::Sub": "${BuildStack}-RepositoryUrl" } },
-                Version: { "Ref": "Version" }
+                Version: {"Fn::If": ["UseBuildVersion", {"Ref": "BuildVersion"}, { "Ref": "Version" }]}
               }
           Memory: 128
           PortMappings:
