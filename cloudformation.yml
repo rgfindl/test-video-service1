@@ -33,11 +33,13 @@ Parameters:
 
   Version:
     Type: String
-    Default: 'latest'
+    Default: '' # Change this to deploy a different version to 'prod'
     Description: Service version
 
 Conditions:
-  UseBuildVersion: !Equals [!Ref Environment, 'sandbox']
+  UseBuildVersion: !Or
+    - !Equals [!Ref Environment, 'sandbox']
+    - !Equals [!Ref Version, '']
 
 Resources:
 
