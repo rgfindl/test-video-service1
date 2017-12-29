@@ -24,7 +24,7 @@ Parameters:
 
   Path:
     Type: String
-    Default: '/service'
+    Default: '/goldfish'
     Description: Service path
 
   BuildVersion:
@@ -160,7 +160,12 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - !Ref Path
+            -
+              Fn::Join:
+                - ''
+                - - Ref: Path
+                  - '/'
+                  - Ref: Environment
       Actions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
